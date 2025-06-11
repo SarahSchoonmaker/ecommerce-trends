@@ -52,31 +52,32 @@ if not df.empty:
     df["purchase_date"] = pd.to_datetime(df["purchase_date"], errors="coerce")
 
     # --- Top Customers by Spend ---
-    st.subheader("💰 Top 10 Customers by Total Spend (with Location)")
+        
+    st.subheader("🏆 Top 10 Customers by Spend (with City)")
 
-    top_df = (
-        df.groupby(["id", "location"])["purchase_amount"]
+    top_customers_df = (
+        df.groupby(["id", "city"])["purchase_amount"]
         .sum()
         .sort_values(ascending=False)
         .head(10)
         .reset_index()
     )
-    top_df["label"] = top_df["id"].astype(str) + " (" + top_df["location"].astype(str) + ")"
 
-    fig, ax = plt.subplots(figsize=(10, 6))
-    sns.barplot(
-        data=top_df,
-        y="label",
-        x="purchase_amount",
-        palette="magma",
-        ax=ax
+    fig, ax = plt.subplots(figsize=(10, 5))
+    bars = ax.barh(
+        top_customers_df.apply(lambda x: f"{x['id']} ({x['city']})", axis=1),
+        top_customers_df["purchase_amount"],
+        color="skyblue"
     )
-    ax.set_title("Top 10 Customers by Spend", fontsize=14)
-    ax.set_xlabel("Total Spend ($)")
-    ax.xaxis.set_major_formatter(ticker.FuncFormatter(lambda x, _: f"${x:,.0f}"))
+    ax.set_xlabel("Total Purchase Amount ($)")
+    ax.set_title("Top 10 Customers by Total Spend")
+    ax.invert_yaxis()
 
-    for i, value in enumerate(top_df["purchase_amount"]):
-        ax.text(value + 100, i, f"${value:,.0f}", va="center", fontsize=10)
+    # Add value labels to bars
+    for bar in bars:
+        width = bar.get_width()
+        ax.text(width + 10, bar.get_y() + bar.get_height() / 2,
+                f"${width:,.0f}", va="center")
 
     st.pyplot(fig)
 
