@@ -24,7 +24,7 @@ This demonstrates:
 
 ## ✅ Phase 2: Data Science – Analysis + Machine Learning
 
-Once the data is accessible via Athena, you can load it into a Pandas DataFrame for ML analysis:
+Once the data is accessible via Athena, it can load into a Pandas DataFrame for ML analysis:
 
 ### 🔹 1. Behavioral Trend Analysis
 
